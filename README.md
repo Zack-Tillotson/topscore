@@ -1,4 +1,4 @@
-# Jumpstart
+# topscore-api
 Zack Tillotson
 
 ## Development
@@ -23,6 +23,6 @@ npm install -g webpack-dev-server
 
 ## Description
 
-Boilerplate for my react/redux based web applications which use firebase as a backend.
+An easy to use javascript api for interacting with the TopScore web API.
 
 Copyright 2015 Zachery Tillotson

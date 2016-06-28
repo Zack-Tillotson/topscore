@@ -6,6 +6,7 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import Page from '../components/Page';
 import Homepage from '../components/Homepage';
 import Preferences from '../components/Preferences';
+import QueryEvent from '../components/WorkFlows/QueryEvent'
 
 import firebase from '../firebase';
 import actions from '../firebase/actions';
@@ -28,6 +29,11 @@ const Application = React.createClass({
           <IndexRoute component={Homepage} />
           <Route path="preferences">
             <IndexRoute component={Preferences} />
+          </Route>
+          <Route path="WorkFlows">
+            <Route path="QueryEvent">
+              <IndexRoute component={QueryEvent} />
+            </Route>
           </Route>
         </Route>
       </Router>

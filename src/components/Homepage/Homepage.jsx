@@ -11,9 +11,8 @@ const Homepage = React.createClass({
   render() {
     return (
       <InlineCss stylesheet={styles} componentName="container">
-        <h1>Web Jumpstart</h1>
-        <Link to="/preferences/">Preferences</Link>
-        {this.props.children}
+        <h1>TopScore API</h1>
+        <Link to="/WorkFlows/QueryEvent/">Query Event</Link>
       </InlineCss>
     );
   }

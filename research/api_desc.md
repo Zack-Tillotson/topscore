@@ -37,12 +37,20 @@ Initial functionality will be based around reading events, teams, players, and t
 
 1. auth_token - The v0.2 specification document says this is available per user at yoursite.com/u/auth-key. Is there a way to programatically look up this value for a user? If not is there a third party access API?
 
+no.
+
 
 2. fields parameter - The v0.2 specification document says that you can specify for the API to include more information about field objects, ie the full value of the field rather than just its ID. I'm' not sure how this works. For example including the teams or registrations when looking up an event by event_id.
+
+don't use it.
 
 3. baggage - The registration object has several fields which seem related to baggaging. Are these guessed description correct?
   a. baggage_group_id: A unique identifier wherein all registrations with the same ID are mutually baggaged.
   b. is_baggage_user_approved: The registrant has accepted being bagged to the baggage group.
   c. is_baggage_owner_approved: The league has accepted the baggage group as acceptable.
 
+you are correct.
+
 4. throttling - Is the API throttled? If so what are the limits?
+
+There is a 200 calls per minute and 3600 calls per hours limit.

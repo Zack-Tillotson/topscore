@@ -1,8 +1,8 @@
 import Promise from 'promise';
-import superAgent from 'superagent';
-import superAgentPromise from 'superagent-promise';
+import request from 'superagent';
+import Throttle from './throttle';
 
-const xhr = superAgentPromise(superAgent, Promise);
+const throttle = Throttle(1000);
 
 function queryEvent(options) {
 
@@ -53,28 +53,42 @@ function findItem(endpoint, query, options) {
     });
 }
 
-function buildUrl(url, endpoint, params) {
-  const paramString = Object.keys(params)
-    .map(key => `${key}=${params[key]}`)
-    .join('&');
-  return `https://${url}${endpoint}?${paramString}`;
+function buildUrl(url, endpoint) {
+  return `https://${url}${endpoint}`;
 }
 
 function getPageRecursive(soFar, url, endpoint, queryParams, page) {
-  return xhr('GET', buildUrl(url, endpoint, {...queryParams, page}))
-    .then(response => {
-      const {status, count, result} = response.body;
-      if(status != "200") {
-        throw('Bad request error', response);
+  return throttle.enqueue()
+    .then(function() {
+      return new Promise(function(resolve, reject) {
+        request
+          .get(buildUrl(url, endpoint))
+          .query({...queryParams, page})
+          .end(function(err, response){
+            if(err) {
+              reject(response);
+            } else {
+              resolve(response);
+            }
+          });
+      });
+  })
+  .then(response => {
+    const {status, count, result} = response.body;
+    if(status != "200") {
+      throw('Bad request error', response);
+    } else {
+      soFar = [...soFar, ...result];
+      if(soFar.length < count) {
+        return getPageRecursive(soFar, url, endpoint, queryParams, page + 1);
       } else {
-        soFar = [...soFar, ...result];
-        if(soFar.length < count) {
-          return getPageRecursive(soFar, url, endpoint, queryParams, page + 1);
-        } else {
-          return Promise.resolve(soFar);
-        }
+        return Promise.resolve(soFar);
       }
-    });
+    }
+  })
+  .catch(response => {
+    console.log('something failed!', response);
+  });
 }
 
 function getAllItems(endpoint, options) {

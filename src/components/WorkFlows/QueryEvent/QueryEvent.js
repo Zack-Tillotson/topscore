@@ -10,7 +10,7 @@ const QueryEvent = React.createClass({
     return {
       topScoreUrl: 'zachtest.ultimatecentral.com',
       name: 'testevent',
-      authToken: '',
+      authToken: 'IDzZJcsJ4tEZEGMhfjEYMVsxEtqrqYosDI',
       event: {},
       teams: [],
       registrations: [],
@@ -29,7 +29,7 @@ const QueryEvent = React.createClass({
       name: this.state.name,
       queryParams: {
         auth_token: this.state.authToken,
-        per_page: 1,
+        per_page: 100,
       },
     })
     .then(results => {

@@ -33,6 +33,15 @@ function queryEvent(options) {
     });
 }
 
+function queryEvents(options) {
+
+  return getAllItems('/api/events', options)
+    .then(events => {
+      const {queryParams, ...otherOptions} = options;
+      return Promise.resolve({events, ...otherOptions, queryParams});
+    });
+}
+
 function findItem(endpoint, query, options) {
 
   const {url, queryParams} = options;
@@ -98,4 +107,5 @@ function getAllItems(endpoint, options) {
 
 export default {
   queryEvent,
+  queryEvents,
 }

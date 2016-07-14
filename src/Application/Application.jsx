@@ -7,6 +7,7 @@ import Page from '../components/Page';
 import Homepage from '../components/Homepage';
 import Preferences from '../components/Preferences';
 import QueryEvent from '../components/WorkFlows/QueryEvent'
+import QueryEvents from '../components/WorkFlows/QueryEvents'
 
 import firebase from '../firebase';
 import actions from '../firebase/actions';
@@ -33,6 +34,9 @@ const Application = React.createClass({
           <Route path="WorkFlows">
             <Route path="QueryEvent">
               <IndexRoute component={QueryEvent} />
+            </Route>
+            <Route path="QueryEvents">
+              <IndexRoute component={QueryEvents} />
             </Route>
           </Route>
         </Route>

@@ -4,16 +4,15 @@ import api from '../../../api';
 
 import styles from './styles';
 
-const QueryEvent = React.createClass({
+const QueryEvents = React.createClass({
 
   getInitialState() {
     return {
       topScoreUrl: TOPSCORE_API_URL,
       name: TOPSCORE_EVENT_NAME,
       authToken: TOPSCORE_AUTH_TOKEN,
-      event: {},
-      teams: [],
-      registrations: [],
+      through: '2016-01-01',
+      events: [],
     }
   },
 
@@ -24,19 +23,17 @@ const QueryEvent = React.createClass({
   },
 
   handleGoClick() {
-    api.queryEvent({
+    api.queryEvents({
       url: this.state.topScoreUrl,
-      name: this.state.name,
       queryParams: {
         auth_token: this.state.authToken,
         per_page: 100,
+        through: this.state.through,
       },
     })
     .then(results => {
       this.setState({
-        event: results.event,
-        teams: results.teams || [],
-        registrations: results.registrations || [],
+        events: results.events,
       });
     });
   },
@@ -55,8 +52,8 @@ const QueryEvent = React.createClass({
       <InlineStyles stylesheet={styles} componentName="component" className="query-event">
 
         <section>
-          <h1>Query Event</h1>
-          <p>Query an event and associated information, including teams and registrants.</p>
+          <h1>Query Events</h1>
+          <p>Query for events which start past a given date, does not include associated information like teams and registrants.</p>
         </section>
 
         <section>
@@ -65,9 +62,9 @@ const QueryEvent = React.createClass({
             Top Score URL:
             <input type="text" id="topScoreUrl" name="topScoreUrl" onChange={this.handleGivenChange.bind(this, 'topScoreUrl')} defaultValue={this.state.topScoreUrl} />
           </label>
-          <label htmlFor="name">
-            Event Name:
-            <input type="text" id="name" name="name" onChange={this.handleGivenChange.bind(this, 'name')} defaultValue={this.state.name} />
+          <label htmlFor="through">
+            Start Date:
+            <input type="text" id="through" name="through" onChange={this.handleGivenChange.bind(this, 'through')} defaultValue={this.state.through} />
           </label>
           <label htmlFor="authToken">
             AuthToken:
@@ -82,28 +79,12 @@ const QueryEvent = React.createClass({
 
         <section>
           <h3>Event Information</h3>
-          <h4>Event</h4>
-          <table>
-            <tbody>
-              {this.convertObjectToRows(this.state.event)}
-            </tbody>
-          </table>
-          <h4>{this.state.teams.length} Teams</h4>
-          {this.state.teams.map((team, index) => (
+          <h4>{this.state.events.length} Events</h4>
+          {this.state.events.map((team, index) => (
             <div key={index}>
               <table>
                 <tbody>
                   {this.convertObjectToRows(team)}
-                </tbody>
-              </table>
-            </div>
-          ))}
-          <h4>{this.state.registrations.length} Players</h4>
-          {this.state.registrations.map((players, index) => (
-            <div key={index}>
-              <table>
-                <tbody>
-                  {this.convertObjectToRows(player)}
                 </tbody>
               </table>
             </div>
@@ -115,4 +96,4 @@ const QueryEvent = React.createClass({
   }
 });
 
-export default QueryEvent;
+export default QueryEvents;

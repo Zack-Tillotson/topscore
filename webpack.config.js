@@ -3,11 +3,18 @@ var webpack = require('webpack');
 
 var isProdBuild = process.argv.indexOf('-p') !== -1;
 
-var envPlugin = new webpack.DefinePlugin({
+var topscoreConfig = require('./topscore.config.js');
+
+var envValues = {
   __DEBUG__: JSON.stringify(!isProdBuild),
   __RELEASE__: JSON.stringify(isProdBuild),
-  'process.env.NODE_ENV': isProdBuild ? '"production"' : '"development"'
-});
+  'process.env.NODE_ENV': isProdBuild ? '"production"' : '"development"',
+  TOPSCORE_AUTH_TOKEN: JSON.stringify(topscoreConfig.TOPSCORE_AUTH_TOKEN),
+  TOPSCORE_EVENT_NAME: JSON.stringify(topscoreConfig.TOPSCORE_EVENT_NAME),
+  TOPSCORE_API_URL: JSON.stringify(topscoreConfig.TOPSCORE_API_URL)
+}
+
+var envPlugin = new webpack.DefinePlugin(envValues);
 
 module.exports = {
   entry: {

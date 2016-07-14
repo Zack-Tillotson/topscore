@@ -8,9 +8,9 @@ const QueryEvent = React.createClass({
 
   getInitialState() {
     return {
-      topScoreUrl: 'zachtest.ultimatecentral.com',
-      name: 'testevent',
-      authToken: 'IDzZJcsJ4tEZEGMhfjEYMVsxEtqrqYosDI',
+      topScoreUrl: TOPSCORE_API_URL,
+      name: TOPSCORE_EVENT_NAME,
+      authToken: TOPSCORE_AUTH_TOKEN,
       event: {},
       teams: [],
       registrations: [],

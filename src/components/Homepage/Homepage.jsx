@@ -12,6 +12,8 @@ const Homepage = React.createClass({
     return (
       <InlineCss stylesheet={styles} componentName="container">
         <h1>TopScore API</h1>
+        <Link to="/WorkFlows/CheckApiExists/">Check Api Exists</Link>
+        <Link to="/WorkFlows/GetPage/">Get Page</Link>
         <Link to="/WorkFlows/QueryEvent/">Query Event</Link>
         <Link to="/WorkFlows/QueryEvents/">Query Events</Link>
       </InlineCss>

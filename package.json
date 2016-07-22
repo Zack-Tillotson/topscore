@@ -1,7 +1,8 @@
 {
-  "name": "topscore_api",
+  "name": "topscore-api-js",
   "version": "1.0.0",
   "description": "JS API for interacting with TopScore website APIs.",
+  "main": "./src/api",
   "scripts": {
     "start": "webpack-dev-server --port 8888 --content-base app/ --inline --display-reasons --display-error-details",
     "build": "webpack -p",
@@ -9,7 +10,7 @@
   },
   "author": "Zack Tillotson",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "babel-core": "^6.3.26",
     "babel-loader": "^6.2.0",
     "babel-plugin-transform-runtime": "^6.3.13",
@@ -37,9 +38,7 @@
     "superagent": "^2.0.0",
     "superagent-promise": "^1.1.0",
     "webpack": "^1.12.9",
-    "webpack-dev-server": "^1.14.0"
-  },
-  "devDependencies": {
+    "webpack-dev-server": "^1.14.0",
     "react-addons-test-utils": "^0.14.7"
   }
 }

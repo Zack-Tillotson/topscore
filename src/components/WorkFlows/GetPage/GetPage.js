@@ -4,16 +4,15 @@ import api from '../../../api';
 
 import styles from './styles';
 
-const QueryEvent = React.createClass({
+const GetPage = React.createClass({
 
   getInitialState() {
     return {
       topScoreUrl: TOPSCORE_API_URL,
       name: TOPSCORE_EVENT_NAME,
       authToken: TOPSCORE_AUTH_TOKEN,
-      event: {},
-      teams: [],
-      registrations: [],
+      page: api.HELP,
+      pageData: {},
     }
   },
 
@@ -24,19 +23,17 @@ const QueryEvent = React.createClass({
   },
 
   handleGoClick() {
-    api.queryEvent({
-      url: this.state.topScoreUrl,
-      name: this.state.name,
-      queryParams: {
+    api.getPage(
+      this.state.topScoreUrl,
+      this.state.page,
+      {
         auth_token: this.state.authToken,
         per_page: 100,
       },
-    })
+    )
     .then(results => {
       this.setState({
-        event: results.event,
-        teams: results.teams || [],
-        registrations: results.registrations || [],
+        pageData: results.body,
       });
     });
   },
@@ -66,8 +63,8 @@ const QueryEvent = React.createClass({
             <input type="text" id="topScoreUrl" name="topScoreUrl" onChange={this.handleGivenChange.bind(this, 'topScoreUrl')} defaultValue={this.state.topScoreUrl} />
           </label>
           <label htmlFor="name">
-            Event Name:
-            <input type="text" id="name" name="name" onChange={this.handleGivenChange.bind(this, 'name')} defaultValue={this.state.name} />
+            Page:
+            <input type="text" id="page" name="page" onChange={this.handleGivenChange.bind(this, 'page')} defaultValue={this.state.page} />
           </label>
           <label htmlFor="authToken">
             AuthToken:
@@ -81,33 +78,12 @@ const QueryEvent = React.createClass({
         </section>
 
         <section>
-          <h3>Event Information</h3>
-          <h4>Event</h4>
+          <h3>Page</h3>
           <table>
             <tbody>
-              {this.convertObjectToRows(this.state.event)}
+              {this.convertObjectToRows(this.state.pageData)}
             </tbody>
           </table>
-          <h4>{this.state.teams.length} Teams</h4>
-          {this.state.teams.map((team, index) => (
-            <div key={index}>
-              <table>
-                <tbody>
-                  {this.convertObjectToRows(team)}
-                </tbody>
-              </table>
-            </div>
-          ))}
-          <h4>{this.state.registrations.length} Players</h4>
-          {this.state.registrations.map((player, index) => (
-            <div key={index}>
-              <table>
-                <tbody>
-                  {this.convertObjectToRows(player)}
-                </tbody>
-              </table>
-            </div>
-          ))}
         </section>
 
       </InlineStyles>
@@ -115,4 +91,4 @@ const QueryEvent = React.createClass({
   }
 });
 
-export default QueryEvent;
+export default GetPage;

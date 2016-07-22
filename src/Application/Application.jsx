@@ -6,8 +6,11 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import Page from '../components/Page';
 import Homepage from '../components/Homepage';
 import Preferences from '../components/Preferences';
+
 import QueryEvent from '../components/WorkFlows/QueryEvent'
 import QueryEvents from '../components/WorkFlows/QueryEvents'
+import CheckApiExists from '../components/WorkFlows/CheckApiExists'
+import GetPage from '../components/WorkFlows/GetPage'
 
 import firebase from '../firebase';
 import actions from '../firebase/actions';
@@ -37,6 +40,12 @@ const Application = React.createClass({
             </Route>
             <Route path="QueryEvents">
               <IndexRoute component={QueryEvents} />
+            </Route>
+            <Route path="CheckApiExists">
+              <IndexRoute component={CheckApiExists} />
+            </Route>
+            <Route path="GetPage">
+              <IndexRoute component={GetPage} />
             </Route>
           </Route>
         </Route>

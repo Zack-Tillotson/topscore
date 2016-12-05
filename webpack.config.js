@@ -18,8 +18,8 @@ var envPlugin = new webpack.DefinePlugin(envValues);
 
 module.exports = {
   entry: {
-    app: './src/index.js',
-    tests: './src/tests.js'
+    app: './src/appEntry',
+    tests: './src/testsEntry'
   },
   output: {
     filename: '[name].js',
@@ -41,7 +41,7 @@ module.exports = {
       { test: /\.raw\.less$/, loader: 'raw!less'},
     ]
   },
-  plugins: [new webpack.HotModuleReplacementPlugin(), envPlugin],
+  plugins: [envPlugin],
   devServer: {
     proxy: {
       '/tests/': {

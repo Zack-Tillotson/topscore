@@ -15,14 +15,14 @@ function buildUrl(url, endpoint) {
   return `https://${url}${endpoint}`;
 }
 
-function getPage(url, endpoint, queryParams) {
-  const {page = 1} = queryParams;
+function getPage(url, endpoint, queryParams = {}) {
+  const {page = 1, ...restParams} = queryParams;
   return throttle.enqueue()
     .then(function() {
       return new Promise(function(resolve, reject) {
         request
           .get(buildUrl(url, endpoint))
-          .query({...queryParams})
+          .query({page, ...restParams})
           .end(function(err, response){
             if(err) {
               reject(response);

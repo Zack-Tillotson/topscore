@@ -1,5 +1,5 @@
 module.exports = {
-  TOPSCORE_AUTH_TOKEN: 'auth token from api',
-  TOPSCORE_EVENT_NAME: 'event name',
-  TOPSCORE_API_URL: 'the domain for your api url'
+  TOPSCORE_AUTH_TOKEN: 'IDzZJcsJ4tEZEGMhfjEYMVsxEtqrqYosDI',
+  TOPSCORE_EVENT_NAME: 'testevent',
+  TOPSCORE_API_URL: 'zachtest.ultimatecentral.com'
 }

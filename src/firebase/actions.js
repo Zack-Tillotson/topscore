@@ -1,4 +1,4 @@
-import actions from '../actions';
+import actions from '../actionTypes';
 import firebase from './index';
 
 // Don't use these methods directly, rather rhis dispatcher should be attached to a 'connected' component, ie:

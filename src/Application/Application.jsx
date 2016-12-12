@@ -11,6 +11,7 @@ import QueryEvent from '../components/WorkFlows/QueryEvent'
 import QueryEvents from '../components/WorkFlows/QueryEvents'
 import CheckApiExists from '../components/WorkFlows/CheckApiExists'
 import GetPage from '../components/WorkFlows/GetPage'
+import AddPlayerToTeam from '../components/WorkFlows/AddPlayerToTeam'
 
 import firebase from '../firebase';
 import actions from '../firebase/actions';
@@ -46,6 +47,9 @@ const Application = React.createClass({
             </Route>
             <Route path="GetPage">
               <IndexRoute component={GetPage} />
+            </Route>
+            <Route path="AddPlayerToTeam">
+              <IndexRoute component={AddPlayerToTeam} />
             </Route>
           </Route>
         </Route>

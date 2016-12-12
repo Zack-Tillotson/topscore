@@ -1,4 +1,4 @@
-import actions from '../actions';
+import actions from '../actionTypes';
 
 function getInitialState() {
   return {

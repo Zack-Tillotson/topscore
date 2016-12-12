@@ -1,6 +1,7 @@
 import Promise from 'promise';
 import request from 'superagent';
 import Throttle from './throttle';
+import sha256 from 'crypto-js/hmac-sha256';
 
 const throttle = Throttle(1000);
 
@@ -59,6 +60,82 @@ function getAllItems(endpoint, options) {
   return getPageRecursive([], url, endpoint, queryParams, 1);
 }
 
+function findItem(endpoint, query, options) {
+
+  const {url, queryParams} = options;
+
+  return getAllItems(endpoint, options)
+    .then(results => {
+      const foundItem = results.find(result => {
+        let found = true;
+        Object.keys(query).forEach(key => {
+          if(result[key] !== query[key]) {
+            found = false;
+          }
+        });
+        return found;
+      });
+      const itemType = !foundItem ? 'item' : foundItem.model;
+      return Promise.resolve({...options, [itemType]: foundItem});
+    });
+}
+
+// Given the item endpoint, the item value, and user's auth-key and auth-secret
+// will calculate the POST request parameters including auth_token and auth_csrf.
+// Returns a promise.
+function updateItem(endpoint, item, options) {
+  
+  const {url, queryParams: {secret: client_secret, auth_token}} = options;
+
+  const api_csrf = calculateCsrf(auth_token, client_secret);
+
+  return throttle.enqueue()
+    .then(function() {
+      return new Promise(function(resolve, reject) {
+        request
+          .post(buildUrl(url, endpoint))
+          .query({api_csrf, auth_token})
+          .send(item)
+          .end(function(err, response){
+            if(err) {
+              reject(response);
+            } else {
+              resolve(response);
+            }
+          });
+      });
+  });
+}
+
+function buildNonce(length = 10) {
+    
+    let nonce = "";
+    let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for(let i=0; i < length; i++ ) {
+      nonce += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+
+    return nonce;
+
+}
+
+// nonce = <random string, at least 10 characters long>
+// timestamp = <current unix timestamp>
+// hmac = base64_url_encode(hmac_sha256(CLIENT_ID + nonce + timestamp, CLIENT_SECRET))
+// return base64_url_encode(nonce + ‘|’ + timestamp + ‘|’ + hmac)
+function calculateCsrf(id, secret) {
+
+  const nonce = buildNonce();
+  const timestamp = new Date().getTime();
+
+  const hmac = btoa(sha256(`${id}${nonce}${timestamp}`, secret));
+  const csrf = btoa(`${nonce}|${timestamp}|${hmac}`);
+
+  return csrf;
+
+}
+
 // Externally exposed functions /////////////////////////
 
 function checkApiExists(options) {
@@ -101,31 +178,24 @@ function queryEvent(options) {
 
 function queryEvents(options) {
 
-  return getAllItems('/api/events', options)
+  return getAllItems(EVENTS, options)
     .then(events => {
       const {queryParams, ...otherOptions} = options;
       return Promise.resolve({events, ...otherOptions, queryParams});
     });
 }
 
-function findItem(endpoint, query, options) {
+function updatePlayerTeam(options) {
 
-  const {url, queryParams} = options;
+  let promiseChain = Promise.resolve();
 
-  return getAllItems(endpoint, options)
-    .then(results => {
-      const foundItem = results.find(result => {
-        let found = true;
-        Object.keys(query).forEach(key => {
-          if(result[key] !== query[key]) {
-            found = false;
-          }
-        });
-        return found;
-      });
-      const itemType = !foundItem ? 'item' : foundItem.model;
-      return Promise.resolve({...options, [itemType]: foundItem});
-    });
+  const {registrationId: id, teamId: team_id, role, ...otherOptions} = options;
+
+  return updateItem(`${REGISTRATIONS}/edit`, {
+    id,
+    team_id,
+    'roles[]': role,
+  }, otherOptions);
 }
 
 /////////////////////////////////////////////////////////////////
@@ -136,6 +206,7 @@ export default {
   getPage,
   queryEvent,
   queryEvents,
+  updatePlayerTeam,
 
   HELP,  // Constants
   EVENTS,

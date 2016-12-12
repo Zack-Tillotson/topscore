@@ -16,6 +16,7 @@ const Homepage = React.createClass({
         <Link to="/WorkFlows/GetPage/">Get Page</Link>
         <Link to="/WorkFlows/QueryEvent/">Query Event</Link>
         <Link to="/WorkFlows/QueryEvents/">Query Events</Link>
+        <Link to="/WorkFlows/AddPlayerToTeam/">Add Player To Team</Link>
       </InlineCss>
     );
   }

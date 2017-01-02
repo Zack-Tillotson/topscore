@@ -9,10 +9,10 @@ var envValues = {
   __DEBUG__: JSON.stringify(!isProdBuild),
   __RELEASE__: JSON.stringify(isProdBuild),
   'process.env.NODE_ENV': isProdBuild ? '"production"' : '"development"',
-  TOPSCORE_AUTH_TOKEN: JSON.stringify(topscoreConfig.TOPSCORE_AUTH_TOKEN),
-  TOPSCORE_AUTH_SECRET: JSON.stringify(topscoreConfig.TOPSCORE_AUTH_SECRET),
-  TOPSCORE_EVENT_NAME: JSON.stringify(topscoreConfig.TOPSCORE_EVENT_NAME),
-  TOPSCORE_API_URL: JSON.stringify(topscoreConfig.TOPSCORE_API_URL)
+  TOPSCORE_AUTH_TOKEN: isProdBuild ? '""' : JSON.stringify(topscoreConfig.TOPSCORE_AUTH_TOKEN),
+  TOPSCORE_AUTH_SECRET: isProdBuild ? '""' : JSON.stringify(topscoreConfig.TOPSCORE_AUTH_SECRET),
+  TOPSCORE_EVENT_NAME: isProdBuild ? '""' : JSON.stringify(topscoreConfig.TOPSCORE_EVENT_NAME),
+  TOPSCORE_API_URL: isProdBuild ? '""' : JSON.stringify(topscoreConfig.TOPSCORE_API_URL)
 }
 
 var envPlugin = new webpack.DefinePlugin(envValues);

@@ -1,7 +1,8 @@
 import Promise from 'promise';
 import request from 'superagent';
 import Throttle from './throttle';
-import sha256 from 'crypto-js/hmac-sha256';
+import CryptoJS from 'crypto-js';
+import base64url from 'base64url';
 
 const throttle = Throttle(1000);
 
@@ -95,6 +96,7 @@ function updateItem(endpoint, item, options) {
         request
           .post(buildUrl(url, endpoint))
           .query({api_csrf, auth_token})
+          .set({'content-type': 'text/plain'})
           .send(item)
           .end(function(err, response){
             if(err) {
@@ -129,8 +131,8 @@ function calculateCsrf(id, secret) {
   const nonce = buildNonce();
   const timestamp = new Date().getTime();
 
-  const hmac = btoa(sha256(`${id}${nonce}${timestamp}`, secret));
-  const csrf = btoa(`${nonce}|${timestamp}|${hmac}`);
+  const hmac = base64url.encode(CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(`${id}${nonce}${timestamp}`, secret)));
+  const csrf = base64url.encode(`${nonce}|${timestamp}|${hmac}`);
 
   return csrf;
 

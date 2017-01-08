@@ -1,6 +1,6 @@
 {
   "name": "topscore-api-js",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "JS API for interacting with TopScore website APIs.",
   "main": "./src/api",
   "scripts": {

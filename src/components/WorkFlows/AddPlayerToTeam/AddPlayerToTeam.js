@@ -10,10 +10,9 @@ const AddPlayersToTeams = React.createClass({
     return {
       topScoreUrl: TOPSCORE_API_URL,
       authToken: TOPSCORE_AUTH_TOKEN,
-      authSecret: TOPSCORE_AUTH_SECRET,
-      registrationId: '1632080',
-      teamId: '189509',
-      roles: 'player',
+      csrf: '',
+      registrationId: '',
+      teamId: '',
       resultReg: {},
     }
   },
@@ -25,15 +24,42 @@ const AddPlayersToTeams = React.createClass({
   },
 
   handleGoClick() {
+
+    let registrationId = this.state.registrationId;
+    if(registrationId.indexOf(',') >= 0) {
+      registrationId = registrationId.split(',');
+    }
+
     api.updatePlayerTeam({
       url: this.state.topScoreUrl,
       name: this.state.name,
-      registrationId: this.state.registrationId,
+      registrationId,
       teamId: this.state.teamId,
-      roles: this.state.roles,
       queryParams: {
         auth_token: this.state.authToken,
-        secret: this.state.authSecret,
+        api_csrf: this.state.csrf,
+      },
+    })
+    .then(results => {
+      this.setState({
+        resultReg: results || {},
+      });
+    });
+  },
+
+  handleBatchGoClick() {
+
+    const registrationIds = this.state.registrationId.split(',');
+
+
+    api.batchUpdatePlayerTeam({
+      url: this.state.topScoreUrl,
+      name: this.state.name,
+      registrationIds,
+      teamId: this.state.teamId,
+      queryParams: {
+        auth_token: this.state.authToken,
+        api_csrf: this.state.csrf,
       },
     })
     .then(results => {
@@ -81,13 +107,14 @@ const AddPlayersToTeams = React.createClass({
           </label>
           <label htmlFor="authToken">
             AuthSecret:
-            <input type="text" id="authSecret" name="authSecret" onChange={this.handleGivenChange.bind(this, 'authSecret')} defaultValue={this.state.authSecret} />
+            <input type="text" id="csrf" name="csrf" onChange={this.handleGivenChange.bind(this, 'csrf')} defaultValue={this.state.csrf} />
           </label>
         </section>
 
         <section>
           <h3>Controls</h3>
           <button onClick={this.handleGoClick}>GO!</button>
+          <button onClick={this.handleBatchGoClick}>Batch GO!</button>
         </section>
 
         <section>

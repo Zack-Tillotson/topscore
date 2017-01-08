@@ -1,8 +1,6 @@
 import Promise from 'promise';
 import request from 'superagent';
 import Throttle from './throttle';
-import CryptoJS from 'crypto-js';
-import base64url from 'base64url';
 
 const throttle = Throttle(1000);
 
@@ -86,18 +84,18 @@ function findItem(endpoint, query, options) {
 // Returns a promise.
 function updateItem(endpoint, item, options) {
   
-  const {url, queryParams: {secret: client_secret, auth_token}} = options;
+  const {url, queryParams} = options;
 
-  const api_csrf = calculateCsrf(auth_token, client_secret);
+  const itemString = Object.keys(item).reduce((soFar, key) => `${soFar}&${key}=${item[key]}`, '').slice(1);
 
   return throttle.enqueue()
     .then(function() {
       return new Promise(function(resolve, reject) {
         request
           .post(buildUrl(url, endpoint))
-          .query({api_csrf, auth_token})
-          .set({'content-type': 'text/plain'})
-          .send(item)
+          .query(queryParams)
+          .set({'content-type': 'application/x-www-form-urlencoded'})
+          .send(itemString)
           .end(function(err, response){
             if(err) {
               reject(response);
@@ -107,35 +105,6 @@ function updateItem(endpoint, item, options) {
           });
       });
   });
-}
-
-function buildNonce(length = 10) {
-    
-    let nonce = "";
-    let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for(let i=0; i < length; i++ ) {
-      nonce += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-
-    return nonce;
-
-}
-
-// nonce = <random string, at least 10 characters long>
-// timestamp = <current unix timestamp>
-// hmac = base64_url_encode(hmac_sha256(CLIENT_ID + nonce + timestamp, CLIENT_SECRET))
-// return base64_url_encode(nonce + ‘|’ + timestamp + ‘|’ + hmac)
-function calculateCsrf(id, secret) {
-
-  const nonce = buildNonce();
-  const timestamp = new Date().getTime();
-
-  const hmac = base64url.encode(CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(`${id}${nonce}${timestamp}`, secret)));
-  const csrf = base64url.encode(`${nonce}|${timestamp}|${hmac}`);
-
-  return csrf;
-
 }
 
 // Externally exposed functions /////////////////////////
@@ -187,16 +156,31 @@ function queryEvents(options) {
     });
 }
 
+// Require {queryParams: {api_csrf, auth_token}} option
 function updatePlayerTeam(options) {
 
   let promiseChain = Promise.resolve();
 
-  const {registrationId: id, teamId: team_id, role, ...otherOptions} = options;
+  const {registrationId: id, teamId: team_id, roles, ...otherOptions} = options;
 
   return updateItem(`${REGISTRATIONS}/edit`, {
     id,
     team_id,
-    'roles[]': role,
+  }, otherOptions);
+}
+
+// Require {queryParams: {api_csrf, auth_token}} option
+function batchUpdatePlayerTeam(options) {
+
+  let promiseChain = Promise.resolve();
+
+  const {registrationIds: ids, teamId: team_id, roles, ...otherOptions} = options;
+   
+  otherOptions.queryParams.batch_action = 'setTeam';
+
+  return updateItem(`${REGISTRATIONS}/batch`, {
+    ids,
+    team_id,
   }, otherOptions);
 }
 
@@ -209,6 +193,7 @@ export default {
   queryEvent,
   queryEvents,
   updatePlayerTeam,
+  batchUpdatePlayerTeam,
 
   HELP,  // Constants
   EVENTS,

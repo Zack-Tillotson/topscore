@@ -83,7 +83,7 @@ function findItem(endpoint, query, options) {
 // will calculate the POST request parameters including auth_token and auth_csrf.
 // Returns a promise.
 function updateItem(endpoint, item, options) {
-  
+
   const {url, queryParams} = options;
 
   const itemString = Object.keys(item).reduce((soFar, key) => `${soFar}&${key}=${item[key]}`, '').slice(1);
@@ -175,7 +175,7 @@ function batchUpdatePlayerTeam(options) {
   let promiseChain = Promise.resolve();
 
   const {registrationIds: ids, teamId: team_id, roles, ...otherOptions} = options;
-   
+
   otherOptions.queryParams.batch_action = 'setTeam';
 
   return updateItem(`${REGISTRATIONS}/batch`, {
@@ -194,6 +194,7 @@ export default {
   queryEvents,
   updatePlayerTeam,
   batchUpdatePlayerTeam,
+  getAllItems,
 
   HELP,  // Constants
   EVENTS,
